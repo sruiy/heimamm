@@ -45,7 +45,7 @@
         </el-col>
         <el-col :span="4">
           <el-form-item label="试题类型">
-            <el-select v-model="choiceForm.questionType" style="width:120px">
+            <el-select v-model="choiceForm.questionType" style="width:100px">
               <el-option
                 v-for="item in questionType"
                 :key="item.value"
@@ -199,7 +199,7 @@
       <el-pagination
         background
         :current-page="choiceForm.page"
-        :page-size="choiceForm.pageSize"
+        :page-size="choiceForm.pagesize"
         layout="prev, pager, next"
         :total="choiceForm.total"
         @current-change="currentChange"
@@ -223,11 +223,6 @@ export default {
   name: 'QuestionsChoice',
   data() {
     return {
-      // page: {
-      //   page: 1,
-      //   pageSize: 8,
-      //   total: 10
-      // },
       activeName: 'all',
       subjectIDList: [],
       publishType,
@@ -269,7 +264,7 @@ export default {
         chkState: '',
         publishType: '',
         page: 1,
-        pageSize: 8,
+        pagesize: 4,
         total: null
       }
     }
@@ -291,10 +286,6 @@ export default {
       this.choiceForm.page = newPage
       this.getQuestionsChoice()
     },
-    // async del(info) {
-    //   let res = await choicePublish(info.row.id)
-    //   this.getQuestionsChoice()
-    // },
     clear() {
       for (let key in this.choiceForm) {
         this.choiceForm[key] = ''
@@ -303,6 +294,7 @@ export default {
     },
     getPublishState(row, col, cellValue) {
       // console.log(row.chkState)
+      // console.log(this.chkType[1].value)
       return row.chkState === 1 ? '已发布' : '待发布'
     },
     getQuestionType(row, col, cellValue) {
@@ -335,7 +327,7 @@ export default {
     },
     async getQuestionsChoice() {
       let res = await questionsChoice(this.choiceForm)
-      // console.log(res)
+      console.log(res)
       this.questionsChoiceData = res.data.items
       this.choiceForm.total = res.data.counts
     }
