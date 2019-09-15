@@ -293,28 +293,16 @@ export default {
       }
     },
     getPublishState(row, col, cellValue) {
-      // console.log(row.chkState)
-      // console.log(this.chkType[1].value)
-      return row.chkState === 1 ? '已发布' : '待发布'
+      return this.publishType[cellValue].label
     },
     getQuestionType(row, col, cellValue) {
-      //  console.log(this.questionType)
-      //  console.log(cellValue)
-      //  console.log(cellValue - 1)
       return cellValue ? this.questionType[cellValue - 1].label : '单选'
     },
     getDifficulty(row, col, cellValue) {
       return cellValue ? this.difficulty[cellValue - 1].label : '简单'
     },
     getChkState(row, col, cellValue) {
-      // console.log(cellValue)
-    if (cellValue === 0) {
-      return '待审核'
-    } else if (cellValue === 1) {
-      return '通过'
-    } else {
-      return '拒绝'
-    }
+    return this.chkType[cellValue].label
       
     },
     async getSubjectIDList() {
@@ -323,6 +311,7 @@ export default {
       this.subjectIDList = res.data
     },
     getCitys(pname) {
+      this.choiceForm.city = ''
       this.citys = citys(pname)
     },
     async getQuestionsChoice() {
