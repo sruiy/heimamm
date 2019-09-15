@@ -231,7 +231,6 @@ export default {
       citys,
       questionType,
       chkType,
-      // isShow: true,
 
       questionsChoiceData: [
         {
@@ -271,13 +270,13 @@ export default {
     }
   },
   methods: {
-    async tabChange(params) {
-      // let actName = typeof params === 'string' ? params : params.name
+    tabChange(params) {
       this.choiceForm.page = 1
       this.change(params)
     },
     async change(params) {
       let actName = typeof params === 'string' ? params : params.name
+      this.choiceForm.pagesize = actName === 'solved' ? 8 : 4
 
       if (actName === 'all') {
         await this.getQuestionsChoice()
@@ -286,10 +285,7 @@ export default {
         this.questionsChoiceData = this.questionsChoiceData.filter(item => {
           return item.chkState === 0
         })
-
-        console.log(this.questionsChoiceData)
       } else {
-        // this.choiceForm.pagesize = 8
         await this.getQuestionsChoice(actName)
         this.questionsChoiceData = this.questionsChoiceData.filter(item => {
           return item.chkState === 1
@@ -298,7 +294,6 @@ export default {
     },
     currentChange(newPage) {
       this.choiceForm.page = newPage
-      // console.log(this.activeName)
       this.change(this.activeName)
     },
     clear() {
@@ -329,8 +324,7 @@ export default {
       this.choiceForm.city = ''
       this.citys = citys(pname)
     },
-    async getQuestionsChoice(params) {
-      this.choiceForm.pagesize = params === 'solved' ? 8 : 4
+    async getQuestionsChoice() {
 
       let res = await questionsChoice(this.choiceForm)
       // console.log(res)
