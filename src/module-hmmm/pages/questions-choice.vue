@@ -231,6 +231,7 @@ export default {
       citys,
       questionType,
       chkType,
+      // isShow: true,
 
       questionsChoiceData: [
         {
@@ -265,26 +266,40 @@ export default {
         publishType: '',
         page: 1,
         pagesize: 4,
-        total: null
+        total: 0
       }
     }
   },
   methods: {
-    tabChange(params) {
-      // console.log(params)
-      if (params.name === 'all') {
-        this.getQuestionsChoice()
-      } else if (params.name === 'pending') {
-        this.chkState = 0
-        this.getQuestionsChoice()
+    async tabChange(params) {
+      // let actName = typeof params === 'string' ? params : params.name
+      this.choiceForm.page = 1
+      this.change(params)
+    },
+    async change(params) {
+      let actName = typeof params === 'string' ? params : params.name
+
+      if (actName === 'all') {
+        await this.getQuestionsChoice()
+      } else if (actName === 'pending') {
+        await this.getQuestionsChoice()
+        this.questionsChoiceData = this.questionsChoiceData.filter(item => {
+          return item.chkState === 0
+        })
+
+        console.log(this.questionsChoiceData)
       } else {
-        this.chkState = 1
-        this.getQuestionsChoice()
+        // this.choiceForm.pagesize = 8
+        await this.getQuestionsChoice(actName)
+        this.questionsChoiceData = this.questionsChoiceData.filter(item => {
+          return item.chkState === 1
+        })
       }
     },
     currentChange(newPage) {
       this.choiceForm.page = newPage
-      this.getQuestionsChoice()
+      // console.log(this.activeName)
+      this.change(this.activeName)
     },
     clear() {
       for (let key in this.choiceForm) {
@@ -293,7 +308,8 @@ export default {
       }
     },
     getPublishState(row, col, cellValue) {
-      return this.publishType[cellValue].label
+      // debugger
+      return cellValue === '' ? '待发布' : this.publishType[cellValue].label
     },
     getQuestionType(row, col, cellValue) {
       return cellValue ? this.questionType[cellValue - 1].label : '单选'
@@ -302,8 +318,7 @@ export default {
       return cellValue ? this.difficulty[cellValue - 1].label : '简单'
     },
     getChkState(row, col, cellValue) {
-    return this.chkType[cellValue].label
-      
+      return cellValue === '' ? '待审核' : this.chkType[cellValue].label
     },
     async getSubjectIDList() {
       let res = await subjectSimple()
@@ -314,9 +329,11 @@ export default {
       this.choiceForm.city = ''
       this.citys = citys(pname)
     },
-    async getQuestionsChoice() {
+    async getQuestionsChoice(params) {
+      this.choiceForm.pagesize = params === 'solved' ? 8 : 4
+
       let res = await questionsChoice(this.choiceForm)
-      console.log(res)
+      // console.log(res)
       this.questionsChoiceData = res.data.items
       this.choiceForm.total = res.data.counts
     }
